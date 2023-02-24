@@ -1,0 +1,29 @@
+version: "3.3"
+
+services:
+  db:
+    image: mysql:5.7
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_DATABASE: my_database
+    networks:
+      - my-network  
+  web:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - web:/usr/share/nginx/html
+    depends_on:
+      - db
+    networks:
+      - my-network
+
+volumes:
+  db:
+  web:
+
+networks:
+  my-network:
