@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: deployment
+  namespace: devops
+spec:
+  selector:
+    matchLabels:
+      app: node
+  replicas: 5
+  template: 
+    metadata:
+      labels:
+        app: node
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: country
+                operator: In
+                values:
+                - India
+      containers:
+      - name: node
+        image: akashraut/demo-app
+        ports:
+        - containerPort: 9000
+        env:
+        - name: Password
+          valueFrom:
+            secretKeyRef:
+              name: secret
+              key: password
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: config
+              key: PORT
